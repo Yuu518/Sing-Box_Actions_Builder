@@ -127,28 +127,28 @@ jobs:
 
     steps:
       - name: Checkout code
-        if: ${{ env.VERSION != '' }}
+        # if: ${{ env.VERSION != '' }}
         uses: actions/checkout@v4.1.1
         with:
           fetch-depth: 0
 
       - name: Set up QEMU
-        if: ${{ env.VERSION != '' }}
+        # if: ${{ env.VERSION != '' }}
         uses: docker/setup-qemu-action@v3.0.0
 
       - name: Set up Docker Buildx
-        if: ${{ env.VERSION != '' }}
+        # if: ${{ env.VERSION != '' }}
         uses: docker/setup-buildx-action@v3.0.0
 
       - name: Login to DockerHub
-        if: ${{ env.VERSION != '' }}
+        # if: ${{ env.VERSION != '' }}
         uses: docker/login-action@v3.0.0
         with:
           username: ${{ env.DOCKER_USERNAME }}
           password: ${{ env.DOCKER_PASSWORD }}
 
       - name: Push images to Docker hub
-        if: ${{ env.VERSION != '' }}
+        # if: ${{ env.VERSION != '' }}
         uses: docker/build-push-action@v5.1.0
         with:
           push: true
@@ -197,9 +197,9 @@ jobs:
         if: ${{ env.VERSION != '' }}
         uses: actions/checkout@v4
         with:
-          repository: "SagerNet/sing-box"
-          ref: "${{ env.VERSION }}"
-          fetch-depth: 1
+          repository: "PuerNya/sing-box"
+          ref: "building"
+          fetch-depth: 0
 
       - name: Build main-next releases
         if: ${{ env.VERSION != '' }}
@@ -220,110 +220,110 @@ jobs:
           overwrite: true # 覆盖
           asset_name: "${{ env.BINARY }}-${{ matrix.goos }}-${{ matrix.goarch }}" # 自定义名称
   # =============================================================================================================================================================================================
-  Build-dev-next-image:
-    needs: Check-version
-    runs-on: ubuntu-latest
-    name: "Build dev-next image"
-    env:
-      DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
-      VERSION: ${{ needs.Check-version.outputs.dev_next_new }}
+  # Build-dev-next-image:
+  #   needs: Check-version
+  #   runs-on: ubuntu-latest
+  #   name: "Build dev-next image"
+  #   env:
+  #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+  #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  #     DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}
+  #     VERSION: ${{ needs.Check-version.outputs.dev_next_new }}
 
-    steps:
-      - name: Checkout code
-        if: ${{ env.VERSION != '' }}
-        uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout code
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: actions/checkout@v4.1.1
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Set up QEMU
-        if: ${{ env.VERSION != '' }}
-        uses: docker/setup-qemu-action@v3.0.0
+  #     - name: Set up QEMU
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: docker/setup-qemu-action@v3.0.0
 
-      - name: Set up Docker Buildx
-        if: ${{ env.VERSION != '' }}
-        uses: docker/setup-buildx-action@v3.0.0
+  #     - name: Set up Docker Buildx
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: docker/setup-buildx-action@v3.0.0
 
-      - name: Login to DockerHub
-        if: ${{ env.VERSION != '' }}
-        uses: docker/login-action@v3.0.0
-        with:
-          username: ${{ env.DOCKER_USERNAME }}
-          password: ${{ env.DOCKER_PASSWORD }}
+  #     - name: Login to DockerHub
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: docker/login-action@v3.0.0
+  #       with:
+  #         username: ${{ env.DOCKER_USERNAME }}
+  #         password: ${{ env.DOCKER_PASSWORD }}
 
-      - name: Push images to Docker hub
-        if: ${{ env.VERSION != '' }}
-        uses: docker/build-push-action@v5.1.0
-        with:
-          push: true
-          platforms: linux/i386, linux/amd64, linux/arm/v7, linux/arm64
-          build-args: BRANCH=${{ env.VERSION }}
-          tags: |
-            ${{ env.DOCKERHUB_REPOSITORY }}:dev-next
-            ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.VERSION }}
+  #     - name: Push images to Docker hub
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: docker/build-push-action@v5.1.0
+  #       with:
+  #         push: true
+  #         platforms: linux/i386, linux/amd64, linux/arm/v7, linux/arm64
+  #         build-args: BRANCH=${{ env.VERSION }}
+  #         tags: |
+  #           ${{ env.DOCKERHUB_REPOSITORY }}:dev-next
+  #           ${{ env.DOCKERHUB_REPOSITORY }}:${{ env.VERSION }}
   # =============================================================================================================================================================================================
-  Build-dev-next-releases:
-    needs: Check-version
-    runs-on: ubuntu-latest
-    name: Build dev-next releases
-    env:
-      CGO_ENABLED: 0
-      BINARY: sing-box
-      VERSION: ${{ needs.Check-version.outputs.dev_next_new }}
-      GO_VERSION: ${{ needs.Check-version.outputs.go_version }}
+  # Build-dev-next-releases:
+  #   needs: Check-version
+  #   runs-on: ubuntu-latest
+  #   name: Build dev-next releases
+  #   env:
+  #     CGO_ENABLED: 0
+  #     BINARY: sing-box
+  #     VERSION: ${{ needs.Check-version.outputs.dev_next_new }}
+  #     GO_VERSION: ${{ needs.Check-version.outputs.go_version }}
 
-    strategy:
-      matrix:
-        goos: [linux, windows, darwin]
-        goarch: ["386", amd64, arm, arm64]
-        exclude:
-          - goarch: 386
-            goos: linux
-          - goarch: arm
-            goos: linux
-          - goarch: "386"
-            goos: darwin
-          - goarch: "arm"
-            goos: darwin
-          - goarch: "386"
-            goos: windows
-          - goarch: arm
-            goos: windows
+  #   strategy:
+  #     matrix:
+  #       goos: [linux, windows, darwin]
+  #       goarch: ["386", amd64, arm, arm64]
+  #       exclude:
+  #         - goarch: 386
+  #           goos: linux
+  #         - goarch: arm
+  #           goos: linux
+  #         - goarch: "386"
+  #           goos: darwin
+  #         - goarch: "arm"
+  #           goos: darwin
+  #         - goarch: "386"
+  #           goos: windows
+  #         - goarch: arm
+  #           goos: windows
 
-    steps:
-      - name: Checkout code
-        if: ${{ env.VERSION != '' }}
-        uses: actions/checkout@v4.1.1
-        with:
-          fetch-depth: 0
+  #   steps:
+  #     - name: Checkout code
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: actions/checkout@v4.1.1
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Git clone repository
-        if: ${{ env.VERSION != '' }}
-        uses: actions/checkout@v4
-        with:
-          repository: "SagerNet/sing-box"
-          ref: "${{ env.VERSION }}"
-          fetch-depth: 1
+  #     - name: Git clone repository
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: actions/checkout@v4
+  #       with:
+  #         repository: "SagerNet/sing-box"
+  #         ref: "${{ env.VERSION }}"
+  #         fetch-depth: 1
 
-      - name: Build dev-next releases
-        if: ${{ env.VERSION != '' }}
-        uses: fscarmen/go-release-action@v1.0.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # 你的 GITHUB_TOKEN 用于将版本上传到 Github Release。
-          goos: ${{ matrix.goos }} # 运行程序的操作系统
-          goarch: ${{ matrix.goarch }} # 运行程序的架构
-          goversion: ${{ env.GO_VERSION }} # Go 编译环境版本
-          project_path: "./cmd/sing-box" # 在哪里运行 go build 命令。
-          binary_name: "${{ env.BINARY }}" # 二进制名称
-          build_flags: "-trimpath -tags with_quic,with_grpc,with_dhcp,with_wireguard,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_gvisor" # 传递给 go build 命令的其他参数
-          ldflags: -s -w -X github.com/sagernet/sing-box/constant.Version=${{ env.VERSION }} # ldflags参数
-          md5sum: "false"
-          release_tag: "${{ env.VERSION }}" # 上传的标签
-          release_name: "${{ env.VERSION }}" # 上传的名字
-          compress_assets: "auto" # 自定义打包
-          overwrite: true # 覆盖
-          asset_name: "${{ env.BINARY }}-${{ matrix.goos }}-${{ matrix.goarch }}" # 自定义名称
+  #     - name: Build dev-next releases
+  #       if: ${{ env.VERSION != '' }}
+  #       uses: fscarmen/go-release-action@v1.0.0
+  #       with:
+  #         github_token: ${{ secrets.GITHUB_TOKEN }} # 你的 GITHUB_TOKEN 用于将版本上传到 Github Release。
+  #         goos: ${{ matrix.goos }} # 运行程序的操作系统
+  #         goarch: ${{ matrix.goarch }} # 运行程序的架构
+  #         goversion: ${{ env.GO_VERSION }} # Go 编译环境版本
+  #         project_path: "./cmd/sing-box" # 在哪里运行 go build 命令。
+  #         binary_name: "${{ env.BINARY }}" # 二进制名称
+  #         build_flags: "-trimpath -tags with_quic,with_grpc,with_dhcp,with_wireguard,with_ech,with_utls,with_reality_server,with_acme,with_clash_api,with_gvisor" # 传递给 go build 命令的其他参数
+  #         ldflags: -s -w -X github.com/sagernet/sing-box/constant.Version=${{ env.VERSION }} # ldflags参数
+  #         md5sum: "false"
+  #         release_tag: "${{ env.VERSION }}" # 上传的标签
+  #         release_name: "${{ env.VERSION }}" # 上传的名字
+  #         compress_assets: "auto" # 自定义打包
+  #         overwrite: true # 覆盖
+  #         asset_name: "${{ env.BINARY }}-${{ matrix.goos }}-${{ matrix.goarch }}" # 自定义名称
   # =============================================================================================================================================================================================
   Mark-image-version:
     needs:
@@ -331,8 +331,8 @@ jobs:
       - Create-release
       - Build-main-next-image
       - Build-main-next-releases
-      - Build-dev-next-image
-      - Build-dev-next-releases
+      # - Build-dev-next-image
+      # - Build-dev-next-releases
     runs-on: ubuntu-latest
     name: "Mark the image version"
     env:
